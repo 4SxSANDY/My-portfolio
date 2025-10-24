@@ -1,0 +1,180 @@
+/* Portfolio page specific styles (light theme) */
+.portfolio {
+  /* light cream background like figma */
+  --pf-bg: #fff7db;
+  --pf-fg: #1f140c;
+  --pf-muted: #6b5a4d;
+  /* red accent for hash and highlights */
+  --pf-accent: #e53935;
+  --pf-border: rgba(31,20,12,0.25);
+  color: var(--pf-fg);
+  background: var(--pf-bg);
+}
+.pf-container { max-width: 1200px; margin: 0 auto; padding: 32px 32px 64px; }
+
+/* vertical social bar on the left */
+.pf-social {
+  position: fixed; left: 10px; top: 64px; display: grid; gap: 10px;
+  border-left: 3px solid #1f140c; padding-left: 8px;
+}
+.pf-social .ico { color: #1f140c; opacity: .9; text-decoration: none; width: 26px; height: 26px; display: grid; place-items: center; border: 1px solid var(--pf-border); border-radius: 4px; background: #fff7db; }
+.pf-social .ico:hover { opacity: 1; box-shadow: 0 1px 0 rgba(0,0,0,.15); }
+
+/* hero */
+.pf-hero { display: grid; grid-template-columns: 1.15fr 0.95fr; gap: 28px; align-items: start; margin-bottom: 56px; }
+.pf-intro { margin: 0; }
+.pf-title { font-size: clamp(28px, 6vw, 56px); line-height: 1.05; margin: 0 0 8px; }
+.pf-title .muted { color: var(--pf-muted); font-weight: 700; letter-spacing: 1px; font-size: 0.9em; }
+.pf-title .accent { color: var(--pf-accent); font-weight: 800; }
+.pf-sub { margin: 12px 0 16px; color: var(--pf-muted); }
+.pf-actions { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.pf-actions .btn { display: inline-block; padding: 8px 12px; border: 1px solid var(--pf-fg); color: var(--pf-fg); text-decoration: none; border-radius: 6px; font-weight: 700; }
+.pf-actions .btn:hover { background: var(--pf-fg); color: var(--pf-bg); }
+.pf-actions .badge { font-size: 12px; color: var(--pf-muted); border: 1px dashed var(--pf-border); padding: 4px 8px; border-radius: 6px; }
+.pf-actions .badge::before { content: ''; display: inline-block; width: 8px; height: 8px; background: #e53935; border-radius: 2px; margin-right: 6px; box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset; }
+.pf-photo { margin: 0; justify-self: end; position: relative; }
+.pf-photo img {
+  width: clamp(240px, 32vw, 360px);
+  height: auto;
+  border-radius: 8px;
+  display: block;
+  filter: grayscale(0%);
+  background: transparent;           /* ensure no fill color behind PNG */
+  mix-blend-mode: normal;            /* keep original colors */
+}
+/* status badge under photo like figma */
+.pf-status {
+  position: absolute;
+  left: 8px; right: auto; bottom: -12px;
+  transform: translateY(100%);
+  background: #fff;
+  color: var(--pf-fg);
+  font-size: 12px;
+  border: 1px solid var(--pf-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+}
+.pf-status .dot { display: inline-block; width: 8px; height: 8px; background: #e53935; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+
+/* ---------- Portfolio animations ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(18px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes floatY {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+/* hero intro + photo enter */
+.pf-hero { animation: fadeInUp .6s ease both; }
+.pf-intro { animation: fadeInUp .7s ease both .05s; }
+.pf-photo img { animation: fadeIn .7s ease both .1s, floatY 10s ease-in-out infinite 1s; transition: transform .25s ease, box-shadow .25s ease; }
+.pf-photo img:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 28px rgba(0,0,0,0.16); }
+
+/* sections gently fade in */
+.pf-section { animation: fadeIn .6s ease both .05s; }
+.pf-section:nth-of-type(2) { animation-delay: .08s; }
+.pf-section:nth-of-type(3) { animation-delay: .12s; }
+.pf-section:nth-of-type(4) { animation-delay: .16s; }
+
+/* cards rise in + hover lift */
+.card { animation: riseIn .5s ease both; transition: transform .2s ease, box-shadow .2s ease; }
+.pf-projects .card:nth-child(1) { animation-delay: .05s; }
+.pf-projects .card:nth-child(2) { animation-delay: .1s; }
+.pf-projects .card:nth-child(3) { animation-delay: .15s; }
+.card:hover { transform: translateY(-6px); box-shadow: 0 14px 28px rgba(0,0,0,0.14); }
+
+/* buttons micro interaction */
+.portfolio .btn { transition: transform .15s ease; }
+.portfolio .btn:active { transform: translateY(1px) scale(0.99); }
+
+/* quote */
+.pf-quote { margin: 48px 0; }
+/* blue quote card like figma */
+.pf-quote blockquote { position: relative; padding: 20px 24px; background: #e9f1ff; border: 1px solid rgba(0,57,120,0.25); border-radius: 4px; max-width: clamp(560px, 60vw, 820px); }
+.pf-quote blockquote::before { content: '“'; position: absolute; left: -14px; top: -10px; font-size: 36px; color: #1f140c; }
+.pf-quote blockquote::after { content: '”'; position: absolute; right: 10px; bottom: -16px; font-size: 28px; color: #1f140c; }
+.pf-quote blockquote p { margin: 0 0 6px; }
+.pf-quote blockquote footer {
+  text-align: right;
+  color: var(--pf-fg);
+}
+.pf-quote blockquote footer {
+  display: flex;
+  justify-content: flex-end;
+}
+.pf-quote blockquote footer::before { content: ''; }
+.pf-quote .author {
+  display: inline-block;
+  background: #efe5cc;
+  border: 1px solid var(--pf-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+}
+
+/* projects */
+.pf-section { margin: 56px 0; }
+/* headings within simple sections */
+.pf-section > h2 { margin: 0 0 16px; font-size: 24px; display: flex; align-items: center; gap: 12px; }
+.pf-section > h2::before { content: '#'; color: var(--pf-accent); font-weight: 800; }
+.pf-section > h2::after { content: ''; height: 2px; background: var(--pf-border); flex: 1; }
+.pf-sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.pf-sec-head h2 { margin: 0; font-size: 24px; display: flex; align-items: center; gap: 12px; }
+.pf-sec-head h2::before { content: '#'; color: var(--pf-accent); font-weight: 800; }
+.pf-sec-head h2::after { content: ''; height: 2px; background: var(--pf-border); flex: 1; }
+.view-all { color: var(--pf-fg); text-decoration: none; border-bottom: 1px solid var(--pf-border); padding-bottom: 2px; }
+.view-all:hover { border-color: var(--pf-fg); }
+.pf-grid { display: grid; gap: 16px; }
+.pf-projects { grid-template-columns: repeat(3, 1fr); }
+.card { background: #fffaf0; border: 1px solid var(--pf-border); border-radius: 8px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+.card .thumb { background: #d9d1c1; height: 180px; }
+.card-title { margin: 12px 12px 4px; font-size: 18px; }
+.card-desc { margin: 0 12px 10px; color: var(--pf-muted); font-size: 14px; }
+.card-tags { display: flex; gap: 8px; padding: 0 12px 14px; }
+.card-tags span { font-size: 12px; border: 1px solid var(--pf-border); padding: 4px 6px; border-radius: 6px; }
+
+/* skills */
+.pf-skills { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.skill-col h4 { margin: 0 0 8px; }
+.skill-col ul { margin: 0; padding-left: 16px; color: var(--pf-muted); }
+
+/* about & contacts */
+.pf-about { max-width: 70ch; color: var(--pf-muted); }
+.portfolio .btn { display: inline-block; padding: 8px 12px; border: 1px solid var(--pf-fg); color: var(--pf-fg); text-decoration: none; border-radius: 6px; font-weight: 700; }
+.portfolio .btn:hover { background: var(--pf-fg); color: var(--pf-bg); }
+
+/* --- Responsive laptop/tablet breakpoints --- */
+@media (max-width: 1440px) {
+  .pf-container { max-width: 1200px; padding: 28px 28px 56px; }
+}
+
+@media (max-width: 1280px) {
+  .pf-container { max-width: 1100px; padding: 24px 24px 52px; }
+  .pf-hero { gap: 24px; }
+  .pf-photo img { width: clamp(220px, 30vw, 340px); }
+}
+
+@media (max-width: 1024px) {
+  .pf-container { padding: 20px 20px 48px; }
+  .pf-hero { grid-template-columns: 1.1fr 0.9fr; gap: 20px; margin-bottom: 48px; }
+  .pf-quote blockquote { max-width: clamp(520px, 70vw, 760px); }
+  .pf-social { left: 6px; top: 56px; }
+}
+
+@media (max-width: 900px) {
+  .pf-hero { grid-template-columns: 1fr; }
+  .pf-photo { justify-self: start; }
+  .pf-projects { grid-template-columns: 1fr; }
+  .pf-skills { grid-template-columns: 1fr; }
+}

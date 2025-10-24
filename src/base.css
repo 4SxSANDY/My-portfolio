@@ -1,0 +1,67 @@
+/* Base globals and shared layout */
+:root {
+  --bg: #2b190f;
+  --fg: #e7d6c9;
+  --accent: #cdb2a9;
+  --line: rgba(231,214,201,0.25);
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; cursor: none; }
+/* hide cursor on interactive elements too */
+button, a, input, textarea, select { cursor: none; }
+
+.app {
+  background: var(--bg);
+  color: var(--fg);
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  letter-spacing: 1px;
+  position: fixed; left: 0; right: 0; top: 0; z-index: 21; background: transparent;
+  border: none;
+}
+.top-bar .menu {
+  background: none; border: none; color: var(--fg); font: inherit; cursor: pointer;
+}
+.logo-name { margin-left: -4px; font-size: 12px; letter-spacing: 2px; opacity: 0.95; }
+.app .logo-small:hover .logo-name { display: inline; }
+.logo-small { background: none; border: none; color: var(--fg); font: inherit; cursor: pointer; }
+.top-actions { display: flex; align-items: center; gap: 16px; }
+.top-actions .action { background: none; border: none; color: var(--fg); font: inherit; letter-spacing: 2px; cursor: pointer; text-decoration: none; }
+.logo-small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.menu { opacity: 0.9; }
+
+/* Make navbar glassy when portfolio is open */
+.portfolio-mode { background: #fff7db; color: #1f140c; }
+.portfolio-mode .top-bar { background: transparent; border: none; box-shadow: none; }
+.portfolio-mode .top-actions { display: none; }
+.portfolio-mode .logo-name { display: inline; color: #2b190f; }
+/* keep only the small S visible and make it brown on portfolio */
+.portfolio-mode .logo-small { color: #2b190f; }
+/* hide theme switcher on portfolio screen to match figma */
+
+/* Global cursor-follow ring */
+.cursor-ring {
+  position: fixed; left: 0; top: 0; width: 36px; height: 36px; border: 1px solid var(--fg);
+  border-radius: 50%; pointer-events: none; z-index: 20; mix-blend-mode: normal; opacity: 0.9;
+  transform: translate(-9999px, -9999px); transition: transform .03s linear;
+}
+.portfolio-mode .cursor-ring { border-color: #2b190f; }
+
+@media (max-width: 900px) {
+  /* grid helpers used across sections */
+}
