@@ -39,7 +39,7 @@ export default function App() {
   const [themeIndex, setThemeIndex] = useState(0)
   const theme = useMemo(() => THEMES[themeIndex], [themeIndex])
   const [menuOpen, setMenuOpen] = useState(false)
-  const [showPortfolio, setShowPortfolio] = useState(false)
+  const [showPortfolio, setShowPortfolio] = useState(true)
   const [showOverlayName, setShowOverlayName] = useState(false)
   const [showLogoName, setShowLogoName] = useState(false)
   const [showBottomName, setShowBottomName] = useState(false)
@@ -123,7 +123,7 @@ export default function App() {
 
     el.addEventListener('pointermove', onMove)
     return () => el.removeEventListener('pointermove', onMove)
-  }, [images.length])
+  }, [images.length, showPortfolio])
 
   // About section circle follow cursor
   useEffect(() => {
@@ -140,7 +140,7 @@ export default function App() {
     }
     sec.addEventListener('pointermove', onMove)
     return () => sec.removeEventListener('pointermove', onMove)
-  }, [])
+  }, [showPortfolio])
 
   // Scatter to assemble animation on first load
   const offsets = useMemo(() => {
@@ -234,8 +234,20 @@ export default function App() {
           S{showLogoName ? <span className="logo-name">ANDHANAM.K</span> : null}
         </button>
         <div className="top-actions">
-          <a className="action" href="#portfolio" onClick={(e) => { e.preventDefault(); setShowPortfolio(true) }}>PORTFOLIO</a>
-          <button className="action" onClick={() => setMenuOpen(true)}>MENU</button>
+          <button 
+            className="app-page-toggle"
+            title={showPortfolio ? 'Open ART PORTFOLIO' : 'Open PROFESSIONAL PORTFOLIO'}
+            aria-label={showPortfolio ? 'Open ART PORTFOLIO' : 'Open PROFESSIONAL PORTFOLIO'}
+          >
+            <label className="ui-toggle">
+              <input 
+                type="checkbox" 
+                checked={!showPortfolio} 
+                onChange={(e) => setShowPortfolio(!e.target.checked)}
+              />
+              <span className="slider" data-off="PRO" data-on="ART"></span>
+            </label>
+          </button>
         </div>
       </header>
 
@@ -317,7 +329,7 @@ export default function App() {
 
       {/* -------- Scroll Sections or Portfolio -------- */}
       {showPortfolio ? (
-        <Portfolio />
+        <Portfolio onBack={() => setShowPortfolio(false)} themeIndex={themeIndex} setThemeIndex={setThemeIndex} />
       ) : (
         <>
           <section className="section section--about" id="about" ref={aboutRef}>
@@ -366,7 +378,7 @@ That's the kind of art I create — drawings that speak with purpose.
                 </ul>
               </div>
               <div className="case-right">
-                <a className="view-project" href="#">VIEW PROJECT →</a>
+                <a className="view-project" href="#">VIEW DRAWINGS →</a>
               </div>
             </div>
           </section>
