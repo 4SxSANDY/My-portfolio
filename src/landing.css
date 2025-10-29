@@ -233,13 +233,16 @@
 .drawing-image {
   margin: 32px 0 24px;
   text-align: center;
+  position: relative;
+  bottom: 20%;
 }
 .drawing-image img {
-  width: clamp(200px, 25vw, 300px);
-  height: auto;
+  width: 70%;
+  height: 100%;
+  position: relative;
+  right: 120%;
   border-radius: 8px;
-  filter: grayscale(100%);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+ 
 }
 .portfolio-btn {
   background: transparent;
@@ -247,12 +250,15 @@
   color: var(--fg);
   padding: 12px 24px;
   font: inherit;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.2s ease;
   display: block;
   margin: 0 auto;
+  position: relative;
+  right: 20%;
+  top: -250%;
 }
 .portfolio-btn:hover {
   background: var(--fg);
