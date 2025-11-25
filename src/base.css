@@ -88,11 +88,11 @@ button, a, input, textarea, select { cursor: none; }
 
 /* Global cursor-follow ring */
 .cursor-ring {
-  position: fixed; left: 0; top: 0; width: 36px; height: 36px; border: 1px solid var(--fg);
+  position: fixed; left: 0; top: 0; width: 36px; height: 36px; border: 1px solid var(--accent);
   border-radius: 50%; pointer-events: none; z-index: 20; mix-blend-mode: normal; opacity: 0.9;
   transform: translate(-9999px, -9999px); transition: transform .03s linear;
 }
-.portfolio-mode .cursor-ring { border-color: #2b190f; }
+.portfolio-mode .cursor-ring { border-color: var(--accent); }
 
 @media (max-width: 900px) {
   .ui-toggle { width: 48px; height: 28px; }
