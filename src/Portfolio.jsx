@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import myPhoto from './image/IMG20240922123246-min-removebg-preview-removebg-preview (1).png'
 import aboutImage from './landing page image/WhatsApp Image 2025-10-18 at 18.26.21_59e938dc.jpg'
 import './portfolio.css'
+import BeeFloat from './components/BeeFloat.jsx'
 
 const THEMES = [
   { name: 'Cocoa', bg: '#2b190f', fg: '#e7d6c9', accent: '#cdb2a9', line: 'rgba(231,214,201,0.25)' },
@@ -37,6 +38,7 @@ export default function Portfolio({ onBack, themeIndex: propThemeIndex, setTheme
   
   const [showLogoName, setShowLogoName] = useState(false)
   const theme = useMemo(() => THEMES[themeIndex], [themeIndex])
+  const heroRef = useRef(null)
   const aboutRef = useRef(null)
   const skillsRef = useRef(null)
   const projectsRef = useRef(null)
@@ -44,6 +46,7 @@ export default function Portfolio({ onBack, themeIndex: propThemeIndex, setTheme
   const contactRef = useRef(null)
   const navigate = useNavigate()
   const [selectedProject, setSelectedProject] = useState(null)
+  const [activeSection, setActiveSection] = useState('hero')
 
   const projects = useMemo(() => ([
     {
@@ -144,6 +147,42 @@ export default function Portfolio({ onBack, themeIndex: propThemeIndex, setTheme
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
+  useEffect(() => {
+    const sections = [
+      { key: 'hero', ref: heroRef },
+      { key: 'about', ref: aboutRef },
+      { key: 'skills', ref: skillsRef },
+      { key: 'projects', ref: projectsRef },
+      { key: 'experience', ref: experienceRef },
+      { key: 'contacts', ref: contactRef }
+    ]
+
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + window.innerHeight / 3
+      for (const section of sections) {
+        const el = section.ref.current
+        if (!el) continue
+        const top = el.offsetTop
+        const height = el.offsetHeight
+        if (scrollPos >= top && scrollPos < top + height) {
+          setActiveSection((prev) => (prev === section.key ? prev : section.key))
+          return
+        }
+      }
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const beeMode = useMemo(() => {
+    if (activeSection === 'skills') return 'rightToLeft'
+    if (activeSection === 'experience') return 'rightToCenter'
+    if (activeSection === 'contacts') return 'left'
+    return 'right'
+  }, [activeSection])
+
   return (
     <div 
       className="portfolio" 
@@ -160,6 +199,10 @@ export default function Portfolio({ onBack, themeIndex: propThemeIndex, setTheme
         setThemeIndex={setThemeIndex}
         themeNames={THEMES.map((t) => t.name)}
       />
+
+      <div className="pf-bee-container" aria-hidden="true">
+        <BeeFloat accent={theme.accent} mode={beeMode} />
+      </div>
 
       {/* Transparent Navbar */}
       <nav className="pf-navbar">
@@ -209,7 +252,7 @@ export default function Portfolio({ onBack, themeIndex: propThemeIndex, setTheme
       <div className="pf-cursor" />
 
       {/* Hero Section */}
-      <section className="pf-hero-section">
+      <section className="pf-hero-section" ref={heroRef}>
         <div className="pf-container">
           <header className="pf-hero">
             <div className="pf-intro">
@@ -336,8 +379,8 @@ export default function Portfolio({ onBack, themeIndex: propThemeIndex, setTheme
             <a className="view-all" href="#" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all →</a>
           </div>
           <div className="pf-grid pf-projects">
-            {projects.slice(0,3).map((p, idx) => (
-              <article key={p.id} className="card" onClick={() => idx === 0 ? setSelectedProject(p) : null} style={{ cursor: idx === 0 ? 'pointer' : 'default' }}>
+            {projects.slice(0,3).map((p) => (
+              <article key={p.id} className="card" onClick={() => setSelectedProject(p)} style={{ cursor: 'pointer' }}>
                 <div className="thumb" />
                 <h3 className="card-title">{p.title}</h3>
                 <p className="card-desc">{p.summary}</p>

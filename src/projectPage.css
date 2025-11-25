@@ -1,0 +1,40 @@
+/* Projects Page specific wrapper to inherit theme variables */
+.projects-page {
+  --pf-bg: var(--bg);
+  --pf-fg: var(--fg);
+  --pf-muted: var(--fg);
+  --pf-accent: var(--accent);
+  --pf-border: var(--line);
+  color: var(--pf-fg);
+  background: var(--pf-bg);
+}
+
+/* Ensure the grid breathes a bit on dedicated page */
+.pf-projects-page .pf-projects {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+/* Force 3 per row on larger screens */
+.pf-projects.pf-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) {
+  .pf-projects.pf-three { grid-template-columns: 1fr; }
+}
+
+/* Box buttons inside project cards */
+.card-actions .btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 2px solid var(--pf-border);
+  color: var(--pf-fg);
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  transition: all 0.25s ease;
+}
+.card-actions .btn:hover {
+  border-color: var(--pf-accent);
+  background: var(--pf-accent);
+  color: var(--pf-bg);
+}
+
+
