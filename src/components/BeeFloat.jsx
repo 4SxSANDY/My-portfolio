@@ -3,9 +3,8 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import gsap from 'gsap'
 
-const MODEL_URL = new URL('../bee/honey_bee-1.glb', import.meta.url)
+const MODEL_URL = new URL('../bee/honey-bee/source/bee.glb', import.meta.url)
 const BEE_SCALE = 0.7
-
 const SECTION_TARGETS = [
   {
     id: 'hero',
@@ -17,13 +16,13 @@ const SECTION_TARGETS = [
     id: 'about-me',
     selector: '#about-me',
     position: { x: -1.5, y: 0.10, z: 0.1 },
-    rotation: { x: 0.12, y: -1.1, z: -0.05 }
+    rotation: { x: 0.12, y: -1.8, z: -0.05 }
   },
   {
     id: 'skills',
     selector: '#skills',
-    position: { x: 1.4, y: -1.0, z: -2.5 },
-    rotation: { x: 0.2, y: 1.1, z: 0.05 }
+    position: { x: 2.2, y: -1.0, z: -2.5 },
+    rotation: { x: 0.2, y: -3.1, z: 0.05 }
   },
   {
     id: 'projects',
@@ -34,14 +33,14 @@ const SECTION_TARGETS = [
   {
     id: 'experience',
     selector: '#experience',
-    position: { x: 0.8, y: -0.4, z: 0 },
-    rotation: { x: -0.1, y: -0.4, z: 0 }
+    position: { x: 1.8, y: -0.2, z: 0 },
+    rotation: { x: 1.6, y: 2.5, z: 6 }
   },
   {
     id: 'contacts',
     selector: '#contacts',
-    position: { x: 3.5, y: -1.5, z: 2.5 },
-    rotation: { x: 0.5, y: -1.5, z: 0 }
+    position: { x: 3.5, y: 1.5, z: 2.5 },
+    rotation: { x: -0.5, y: 1.5, z: 0 }
   }
 ]
 
@@ -58,7 +57,6 @@ export default function BeeFloat({ accent = '#f3c653' }) {
     if (!mount) return
 
     const scene = new THREE.Scene()
-
     const camera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 0.1, 1000)
     camera.position.set(0, 0, 13)
 
@@ -68,9 +66,9 @@ export default function BeeFloat({ accent = '#f3c653' }) {
     mount.appendChild(renderer.domElement)
     rendererRef.current = renderer
 
-    const hemi = new THREE.HemisphereLight(0xffffff, 0x080820, 1.2)
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x080820, 2.5)
     scene.add(hemi)
-    const dir = new THREE.DirectionalLight(0xffffff, 1.1)
+    const dir = new THREE.DirectionalLight(0xffffff, 8)
     dir.position.set(6, 8, 10)
     scene.add(dir)
 
@@ -80,22 +78,64 @@ export default function BeeFloat({ accent = '#f3c653' }) {
 
     const loader = new GLTFLoader()
     const accentColor = new THREE.Color(accent)
+    // texture loader for external textures (Vite resolves these URLs)
+    const texLoader = new THREE.TextureLoader()
+    const textures = {
+      base: texLoader.load(new URL('../bee/honey-bee/textures/gltf_embedded_0.png', import.meta.url).href),
+      normal: texLoader.load(new URL('../bee/honey-bee/textures/gltf_embedded_2.png', import.meta.url).href),
+      ao: texLoader.load(new URL('../bee/honey-bee/textures/gltf_embedded_1@channels=A.png', import.meta.url).href),
+      metalRough: texLoader.load(new URL('../bee/honey-bee/textures/gltf_embedded_3@channels=R.png', import.meta.url).href)
+    }
+    // helpful debug info: resolved texture URLs (view in browser console)
+    console.log('Bee textures resolved:', {
+      base: new URL('../bee/honey-bee/textures/gltf_embedded_0.png', import.meta.url).href,
+      normal: new URL('../bee/honey-bee/textures/gltf_embedded_2.png', import.meta.url).href,
+      ao: new URL('../bee/honey-bee/textures/gltf_embedded_1@channels=A.png', import.meta.url).href,
+      metalRough: new URL('../bee/honey-bee/textures/gltf_embedded_3@channels=R.png', import.meta.url).href
+    })
     loader.load(
       MODEL_URL.href,
       (gltf) => {
+        // log GLTF image refs to confirm whether textures are embedded or external
+        try {
+          console.log('Loaded GLTF:', gltf)
+          console.log('GLTF images:', gltf.parser?.json?.images)
+        } catch (e) {
+          console.warn('Could not log gltf parser images', e)
+        }
         const bee = gltf.scene
         bee.scale.set(BEE_SCALE, BEE_SCALE, BEE_SCALE)
         bee.rotation.set(0, Math.PI / 2, 0)
         bee.traverse((child) => {
           if (child.isMesh && child.material) {
-            child.material.roughness = 0.35
-            child.material.metalness = 0.2
-            if (child.material.emissive) {
-              child.material.emissive.lerp(accentColor.clone().multiplyScalar(0.15), 0.35)
-            } else {
-              child.material.emissive = accentColor.clone().multiplyScalar(0.15)
+            const applyTo = (mat) => {
+              // assign base color map if model doesn't already provide one
+              if (!mat.map && textures.base) {
+                // assign base color map (leave encoding as loader default to avoid bundler warnings)
+                mat.map = textures.base
+              }
+              // normal map
+              if (!mat.normalMap && textures.normal) mat.normalMap = textures.normal
+              // ao map
+              if (!mat.aoMap && textures.ao) mat.aoMap = textures.ao
+              // metalness/roughness packed texture (if applicable)
+              if (!mat.metalnessMap && textures.metalRough) mat.metalnessMap = textures.metalRough
+
+              mat.roughness = mat.roughness !== undefined ? mat.roughness : 0.35
+              mat.metalness = mat.metalness !== undefined ? mat.metalness : 0.2
+              if (mat.emissive) {
+                mat.emissive.lerp(accentColor.clone().multiplyScalar(0.15), 0.35)
+              } else {
+                mat.emissive = accentColor.clone().multiplyScalar(0.15)
+              }
+              mat.needsUpdate = true
             }
-            child.material.needsUpdate = true
+
+            if (Array.isArray(child.material)) {
+              child.material.forEach(applyTo)
+            } else {
+              applyTo(child.material)
+            }
           }
         })
         beeGroup.add(bee)
